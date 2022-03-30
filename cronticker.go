@@ -82,7 +82,7 @@ func (c *CronTicker) runTimer() {
 			return
 		case c.currentTick = <-timer.C:
 			c.C <- c.currentTick
-			c.nextTick = c.Schedule.Next(c.currentTick)
+			c.nextTick = c.Schedule.Next(c.currentTick.Add(time.Microsecond))
 			timer.Reset(time.Until(c.nextTick))
 		}
 	}
