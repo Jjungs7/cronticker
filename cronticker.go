@@ -35,6 +35,8 @@ import (
 	"github.com/robfig/cron/v3"
 )
 
+const SOME_RANDOM_BIG_MILLISECOND_PREVENTS_MULTIPLE_TICKS = 7
+
 type CronTicker struct {
 	C           chan time.Time
 	k           chan bool
@@ -82,7 +84,8 @@ func (c *CronTicker) runTimer() {
 			return
 		case c.currentTick = <-timer.C:
 			c.C <- c.currentTick
-			c.nextTick = c.Schedule.Next(c.currentTick.Add(time.Microsecond))
+			c.nextTick = c.Schedule.Next(
+				c.currentTick.Add(SOME_RANDOM_BIG_MILLISECOND_PREVENTS_MULTIPLE_TICKS * time.Millisecond))
 			timer.Reset(time.Until(c.nextTick))
 		}
 	}
